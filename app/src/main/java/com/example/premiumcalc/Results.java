@@ -44,6 +44,8 @@ public class Results extends AppCompatActivity {
         premiumyearly =(TextView)findViewById(R.id.preyear);
         sve = (Button)findViewById(R.id.save);
 
+        addData();
+
 
 
 

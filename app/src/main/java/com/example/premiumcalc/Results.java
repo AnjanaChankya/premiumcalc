@@ -1,8 +1,11 @@
 package com.example.premiumcalc;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,11 +22,13 @@ public class Results extends AppCompatActivity {
     TextView premiummonthly;
     TextView premiumyearly;
     Button sve;
+    Button viewres;
+    Button recal;
 
-    private double smokerate;
-    private double alcoholrate;
-    private double chronorate;
-    private double policyfee;
+    public static  double smokerate;
+    public static double  alcoholrate;
+    public static double chronorate;
+
     private double genderrate;
     private double termrate;
     @Override
@@ -43,13 +48,10 @@ public class Results extends AppCompatActivity {
         premiummonthly = (TextView)findViewById(R.id.premonth);
         premiumyearly =(TextView)findViewById(R.id.preyear);
         sve = (Button)findViewById(R.id.save);
+        viewres = (Button)findViewById((R.id.view));
 
         addData();
-
-
-
-
-
+        viewres();
 
 
 
@@ -60,9 +62,6 @@ public class Results extends AppCompatActivity {
 
 
 
-
-
-
         Double hpay = Basicinfo.lifecvr*0.001;
         if(hpay<5000){
             hospitalpay.setText(String.valueOf(hpay));
@@ -70,7 +69,8 @@ public class Results extends AppCompatActivity {
         else{
             hospitalpay.setText(("5000"));
         }
-        if(Basicinfo.smoke = true){
+
+        /*if(Basicinfo.smoke = true){
             smokerate = 20.0;
         }
         else{
@@ -87,7 +87,7 @@ public class Results extends AppCompatActivity {
         }
         else{
             chronorate = 0;
-        }
+        }*/
         if(Basicinfo.gender == "Male"){
             genderrate = 3.0;
         }
@@ -103,6 +103,7 @@ public class Results extends AppCompatActivity {
         premiumyearly.setText(String.format("%.2f",annualprememium));
         premiummonthly.setText(String.format("%.2f",monthlypremium2));
     }
+
     public void addData() {
         sve.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,5 +122,38 @@ public class Results extends AppCompatActivity {
 
             }
         });
+    }
+    public void viewres(){
+        viewres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               Cursor res =  mydb.getAllData();
+               if(res.getCount() == 0){
+                   showmessage("Error","Nothing found");
+                   return;
+               }
+               StringBuffer buffer  = new StringBuffer();
+               while(res.moveToNext()){
+
+                   buffer.append("Name: " +res.getString(1) +"\n");
+                   buffer.append("Cover on Natural Death : " +res.getString(2) +"\n");
+                   buffer.append("Cover on Accident Death " +res.getString(3) +"\n");
+                   buffer.append("Cover on illness Death " +res.getString(4) +"\n");
+                   buffer.append("Cover on hospital per day: " +res.getString(5) +"\n");
+                   buffer.append("Monthly premium: " +res.getString(6) +"\n");
+                   buffer.append("Annual premium: " +res.getString(7) +"\n\n\n");
+
+               }
+               showmessage("Data",buffer.toString());
+            }
+        });
+    }
+    public void showmessage(String title,String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+
     }
 }

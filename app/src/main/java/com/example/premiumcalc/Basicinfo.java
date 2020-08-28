@@ -38,9 +38,9 @@ public class Basicinfo extends AppCompatActivity {
     public static String nameee;
     public static int lifecvr;
     public static int years;
-    public static boolean smoke;
-    public static boolean alcoholic;
-    public static boolean chronic;
+    public static boolean smoke = false;
+    public static boolean alcoholic = false;
+    public static boolean chronic = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,31 +176,42 @@ public class Basicinfo extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                nameee = namee.getText().toString();
-
-                if(smokee.isChecked()){
-                    smoke = true;
+                String valid = namee.getText().toString();
+                if(valid.matches(""))
+                {
+                    Toast.makeText(Basicinfo.this,"You did not enter a username", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                else{
-                    smoke = false;
-                }
-
-                if(alcohol.isChecked()){
-                    alcoholic =true;
-                }
-                else{
-                    alcoholic = false;
-                }
-                if(chrono.isChecked()){
-                    chronic = true;
+                else if (rg.getCheckedRadioButtonId() == -1)
+                {
+                    Toast.makeText(Basicinfo.this,"You did not selected a gender", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 else {
-                    chronic = false;
-                }
 
-                Intent i = new Intent(getApplicationContext(), Results.class);
-                startActivity(i);
+
+                    nameee = namee.getText().toString();
+
+                    if (smokee.isChecked()) {
+                        Results.smokerate = 20.0;
+                    } else {
+                        Results.smokerate = 0;
+                    }
+
+                    if (alcohol.isChecked()) {
+                        Results.alcoholrate = 15.0;
+                    } else {
+                        Results.alcoholrate = 0;
+                    }
+                    if (chrono.isChecked()) {
+                        Results.chronorate = 23.0;
+                    } else {
+                        Results.chronorate = 0;
+                    }
+
+                    Intent i = new Intent(getApplicationContext(), Results.class);
+                    startActivity(i);
+                }
             }
         });
     }
